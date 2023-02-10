@@ -2,6 +2,7 @@ package com.example.encryptor
 
 import android.os.Build
 import android.os.Bundle
+import android.widget.Toast
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.annotation.RequiresApi
@@ -16,16 +17,29 @@ import androidx.compose.ui.text.input.TextFieldValue
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.example.encryptor.ui.theme.EncryptorTheme
-import encryptAES256
 import decryptAES256
+import encryptAES256
+import java.util.*
+import javax.crypto.Cipher
+import javax.crypto.spec.SecretKeySpec
 
 
 class MainActivity : ComponentActivity() {
+    @RequiresApi(Build.VERSION_CODES.O)
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContent {
             EncryptorTheme {
-                Text(text = "Hello")
+                Column(
+                    modifier = Modifier
+                        .background(color = Color.LightGray)
+                        .fillMaxSize(),
+                    verticalArrangement = Arrangement.Center,
+                    horizontalAlignment = Alignment.CenterHorizontally,
+
+                    ) {
+                    TextFieldo()
+                }
             }
         }
     }
@@ -46,9 +60,10 @@ fun TextFieldo() {
         TextField(
             value = text, onValueChange = { newText -> text = newText },
             label = {
-                Text(text = "Text to encrypt")
+                Text(text = "Text to encrypt/decrypt")
             },
         )
+
 
         var encryptedText by remember { mutableStateOf("") }
         TextField(
@@ -67,22 +82,16 @@ fun TextFieldo() {
             },
         )
 
-        Button(onClick = {encryptAES256(text, secretKeyText)}) {
+
+        Button(onClick = { encryptedText = encryptAES256(text, secretKeyText) }) {
             Text(text = "Encrypt")
         }
 
-        Button(onClick = {decryptAES256(encryptedText, secretKeyText)}) {
+        Button(onClick = { text = decryptAES256(encryptedText, secretKeyText) }) {
             Text(text = "Decrypt")
         }
     }
 }
-
-@RequiresApi(Build.VERSION_CODES.O)
-@Composable
-fun EncryptButton(){
-
-}
-
 
 @RequiresApi(Build.VERSION_CODES.O)
 @Preview(showBackground = true)
@@ -91,7 +100,6 @@ fun DefaultPreview() {
     EncryptorTheme {
         Column(
             modifier = Modifier
-                .background(color = Color.LightGray)
                 .fillMaxSize(),
             verticalArrangement = Arrangement.Center,
             horizontalAlignment = Alignment.CenterHorizontally,
